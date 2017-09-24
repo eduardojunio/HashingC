@@ -10,6 +10,7 @@ FILE *abrirArquivo(const char *);
 void menu();
 void inserir();
 void acessar();
+void listar();
 void aguardar();
 void lerNumero(int *);
 void lerCaracter(char *);
@@ -94,6 +95,21 @@ void acessar() {
     }
 }
 
+void listar() {
+    printf("Listando registros (Pessoas)\n");
+    printf("\n");
+    int i = 0, c = 0;
+    for (; i < TAMANHO_PESSOAS; i++) {
+        if (pessoas[i].chave != VAZIO) {
+            printf("Endereco: %d, Chave: %d, Nome: %s, Idade: %d, Sexo: %c\n", i, pessoas[i].chave, pessoas[i].primeiroNome, pessoas[i].idade, pessoas[i].sexo);
+            c++;
+        }
+    }
+    if (c == 0) {
+        printf("Nenhum registro encontrado, insira algum antes de listar!\n");
+    }
+}
+
 void menu() {
     int escolha = 0;
     while (escolha != 4) {
@@ -118,6 +134,10 @@ void menu() {
             break;
         case 2:
             acessar();
+            aguardar();
+            break;
+        case 3:
+            listar();
             aguardar();
             break;
         case 4:
