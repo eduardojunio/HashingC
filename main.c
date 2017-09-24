@@ -8,6 +8,8 @@ unsigned int hash(unsigned int, unsigned int);
 int proximoEndereco(int);
 FILE *abrirArquivo(const char *);
 void menu();
+void inserir();
+void acessar();
 void aguardar();
 void lerNumero(int *);
 void lerCaracter(char *);
@@ -71,6 +73,27 @@ void inserir() {
     }
 }
 
+void acessar() {
+    printf("Acessando um registro (Pessoa)\n");
+    printf("Digite a chave: ");
+    int chave;
+    lerNumero(&chave);
+    unsigned int endereco = hash(chave, TAMANHO_PESSOAS);
+    int achou = 1; // 0 = FALSE, 1 = TRUE
+    if (pessoas[endereco].chave != chave) {
+        achou = 0;
+        unsigned int enderecoInicial = endereco;
+        while ((pessoas[endereco = (endereco + proximoEndereco(chave)) % TAMANHO_PESSOAS].chave != chave) && endereco != enderecoInicial) {}
+        if (endereco != enderecoInicial) achou = 1;
+    }
+    if (achou) {
+        printf("\nRegistro\n");
+        printf("Endereco: %d, Chave: %d, Nome: %s, Idade: %d, Sexo: %c\n", endereco, pessoas[endereco].chave, pessoas[endereco].primeiroNome, pessoas[endereco].idade, pessoas[endereco].sexo);
+    } else {
+        printf("Nenhum registro com essa chave foi encontrado!\n");
+    }
+}
+
 void menu() {
     int escolha = 0;
     while (escolha != 4) {
@@ -91,6 +114,10 @@ void menu() {
         switch (escolha) {
         case 1:
             inserir();
+            aguardar();
+            break;
+        case 2:
+            acessar();
             aguardar();
             break;
         case 4:
