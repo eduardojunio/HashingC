@@ -16,6 +16,8 @@ void lerNumero(int *);
 void lerCaracter(char *);
 void lerPalavra(char *);
 void limparBuffer();
+void persistirDadosNoArquivo(FILE *);
+void carregarDadosDoArquivo(FILE *);
 
 typedef struct Pessoas {
     int chave;
@@ -26,8 +28,7 @@ typedef struct Pessoas {
 
 Pessoa pessoas[TAMANHO_PESSOAS];
 
-int main()
-{
+int main(){
     // eu odeio c mais que tudo na vida
     int i = 0;
     for (; i < TAMANHO_PESSOAS; i++) {
@@ -39,9 +40,29 @@ int main()
         printf("Erro ao abrir o arquivo de registros.");
         return -1;
     }
+    carregarDadosDoArquivo(arquivo);
     menu();
+    persistirDadosNoArquivo(arquivo);
     fclose(arquivo);
     return 0;
+}
+
+void carregarDadosDoArquivo(FILE *arquivo) {
+    Pessoa pessoa;
+    int endereco;
+    while (fscanf(arquivo, "%d %d %s %d %c\n", &endereco, &pessoa.chave, pessoa.primeiroNome, &pessoa.idade, &pessoa.sexo) != -1) {
+        pessoas[endereco] = pessoa;
+    }
+}
+
+void persistirDadosNoArquivo(FILE *arquivo) {
+    fseek(arquivo, 0, SEEK_SET);
+    int i = 0;
+    for (; i < TAMANHO_PESSOAS; i++) {
+        if (pessoas[i].chave != VAZIO) {
+            fprintf(arquivo, "%d %d %s %d %c\n", i, pessoas[i].chave, pessoas[i].primeiroNome, pessoas[i].idade, pessoas[i].sexo);
+        }
+    }
 }
 
 unsigned int hash(unsigned int chave, unsigned int primo){
@@ -123,7 +144,7 @@ void menu() {
         printf("1. Inserir registro\n");
         printf("2. Acessar registro\n");
         printf("3. Listar todos os registros\n");
-        printf("4. Sair\n");
+        printf("4. Sair e salvar alteracoes no arquivo\n");
         printf(": ");
         lerNumero(&escolha);
         printf("\n");
